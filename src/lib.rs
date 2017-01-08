@@ -41,6 +41,12 @@ impl Formatter {
                         None => current = Some(FormatType::Index(1)),
                     }
                 }
+                '*' => {
+                    if current.is_some() {
+                        ft.push(current.unwrap());
+                    }
+                    current = Some(FormatType::AppendFileName);
+                }
                 c => {
                     match current {
                         Some(FormatType::Text(s)) => {
@@ -79,6 +85,12 @@ impl Iterator for Formatter {
             match ft {
                 &FormatType::Text(ref s) => result.push_str(s),
                 &FormatType::Index(z) => result.push_str(&Formatter::add_zeros(self.idx, z)),
+                &FormatType::AppendFileName => {
+                    result = String::new();
+                    let to_format = self.to_format[self.idx].clone();
+                    let idx = to_format.find('.').unwrap_or(to_format.len());
+                    result.push_str(&to_format[0..idx]);
+                }
             }
         }
         self.idx += 1;
@@ -91,4 +103,5 @@ impl Iterator for Formatter {
 enum FormatType {
     Text(String),
     Index(usize),
+    AppendFileName,
 }
