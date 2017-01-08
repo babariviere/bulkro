@@ -15,11 +15,11 @@ pub struct Formatter {
 }
 
 impl Formatter {
-    pub fn new<S: AsRef<str>>(format: S, to_format: Vec<S>) -> Formatter {
+    pub fn new<S: AsRef<str>>(format: S, to_format: &Vec<&str>) -> Formatter {
         let format_types = Formatter::build_format_types(&format);
         Formatter {
             format_types: format_types,
-            to_format: to_format.iter().map(|s| s.as_ref().to_string()).collect(),
+            to_format: to_format.iter().map(|s| s.to_string()).collect(),
             idx: 0,
         }
     }
